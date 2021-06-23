@@ -19,6 +19,7 @@ This project is built using Java and Spring Framework. A user is needed to logge
 
 * Dashboard Page
 ![dashboard-page-1](https://github.com/jovenclcodinera/farm-manager/blob/main/src/main/resources/static/images/screenshots/dashboard-page-1.PNG?raw=true)
+
 ![dashboard-page-2](https://github.com/jovenclcodinera/farm-manager/blob/main/src/main/resources/static/images/screenshots/dashboard-page-2.PNG?raw=true)
 
 * Products Page
