@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="container" th:fragment="sales-index">
+		<div th:replace="products/products :: products-saleModal"></div>
+		<div class="row">
+			<div class="col-12">
+				<div class="card card-outline card-success">
+					<div class="card-body">
+						<table id="salesTable" class="table table-bordered table-striped">
+							<thead>
+								<tr class="text-center">
+									<th>Creation Date</th>
+									<th>Product</th>
+									<th>Quantity</th>
+									<th>Price</th>
+									<th>Buyer</th>
+									<th>Status</th>
+									<th>Created By</th>
+									<th>Updated By</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="sale : ${sales}" class="text-center">
+									<td th:text="${#dates.format(sale.created_at, 'dd-MM-yyyy')}"></td>
+									<td th:text="${sale.product.name}"></td>
+									<td th:text="${sale.quantity + ' ' + sale.product.quantityUnit}"></td>
+									<td th:text="${sale.product.price + ' ' + sale.product.currency}"></td>
+									<td th:text="${sale.buyer}"></td>
+									<td>
+										<span class="badge badge-primary" th:if="${sale.status.getStatus() == 'Created'}">Created</span>
+										<span class="badge badge-warning" th:if="${sale.status.getStatus() == 'Ongoing'}">Ongoing</span>
+										<span class="badge badge-info" th:if="${sale.status.getStatus() == 'Pending'}">Pending</span>
+										<span class="badge badge-success" th:if="${sale.status.getStatus() == 'Completed'}">Completed</span>
+										<span class="badge badge-danger" th:if="${sale.status.getStatus() == 'Cancelled'}">Cancelled</span>
+									</td>
+									<td th:text="${sale.createdBy}"></td>
+									<td th:text="${sale.updatedBy}"></td>
+									<td id="actionButtons">
+										<span data-toggle="tooltip" title="Edit" data-placement="top" th:if="${sale.status.getStatus() != 'Cancelled' && sale.status.getStatus() != 'Completed'}">
+											<button class="btn bg-gradient-warning btn-sm rounded-circle" data-toggle="modal" data-target="#createNewSalesModal" th:onclick="editSale([[${sale}]])">
+												<i class="fas fa-edit"></i>
+											</button>
+										</span>
+										<form th:action="@{/sales/{id} (id=${sale.id})}" th:method="delete" class="d-inline-block" data-toggle="tooltip" title="Delete" data-placement="top">
+											<button class="btn bg-gradient-danger btn-sm rounded-circle" type="submit">
+												<i class="fas fa-trash"></i>
+											</button>
+										</form>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<span th:fragment="sale-scripts">
+		<script th:inline="javascript">
+			$(function () {
+		        $("#salesTable").DataTable({
+		        	
+	          		"responsive": true,
+	         		"lengthChange": false,
+	          		"autoWidth": false,
+	          		"buttons": ['pageLength', "csv", "pdf", "print", "colvis"]
+		        }).buttons().container().appendTo('#salesTable_wrapper .col-md-6:eq(0)');
+		        
+		        $('.select2').select2();
+		        $('.select2bs4').select2({
+		            theme: 'bootstrap4'
+	          	});
+	      	});
+
+	      	function editSale(sale) {
+				$('#createNewSalesModal .modal-title').text("Edit Sale for " + sale.product.name);
+				$('#newSaleQuantity').val(sale.quantity).attr('max', sale.quantity);
+				$('#newSaleBuyer').val(sale.buyer);
+				$('#newSaleForm').attr('action', "/sales/" + sale.id);
+				$("#newSaleForm input[name='_method']").attr('value', "put");
+				$('#newSaleSubmit').removeClass("btn-success").addClass("btn-warning text-white");
+				$('#saleSelectDiv').show();
+				$('#newSaleStatus').val(sale.status).change();
+	      	}
+		</script>
+	</span>
+</body>
+</html>

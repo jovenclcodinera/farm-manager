@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container" th:fragment="products-index">
+    	<!-- New Product Modal -->
+	   	<div class="modal fade" id="createNewModal">
+	        <div class="modal-dialog modal-sm">
+	          <div class="modal-content">
+	            <div class="modal-header">
+	              <h4 class="modal-title">New Product</h4>
+	              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                <span aria-hidden="true">&times;</span>
+	              </button>
+	            </div>
+	            <form th:action="@{/products}" th:object="${product}" th:method="put" id="newProductForm">
+	            	<div class="modal-body">
+		              <div class="form-group">
+	                    <label for="newProductName">Name</label>
+	                    <input type="text" class="form-control" id="newProductName" placeholder="Enter name" required th:field="*{name}">
+	                  </div>
+	                  <div class="form-group row">
+	                  	<div class="col">
+	                  		<label for="newProductQuantity">Quantity</label>
+	                    	<input type="number" class="form-control" id="newProductQuantity" step="1" min="0" required th:field="*{quantity}">
+	                  	</div>
+	                  	<div class="col">
+	                  		<label for="newProductPrice">Price</label>
+	                    	<input type="number" class="form-control" id="newProductPrice" min="0" step="any" required th:field="*{price}">
+	                  	</div>
+	                  </div>
+	                  <div class="form-group row">
+	                  	<div class="col">
+                  			<label for="newProductQuantityUnit">Unit</label>
+	                    	<input type="text" class="form-control" id="newProductQuantityUnit" placeholder="Enter Quantity Unit" required th:field="*{quantityUnit}">
+	                  	</div>
+	                  	<div class="col">
+	                  		<label for="newProductCategory">Category</label>
+		                    <select class="form-control select2 select2-success" data-dropdown-css-class="select2-success" th:field="*{category}" required id="newProductCategory" style="width: 100%;">
+		                    	<option th:each="category : ${categories}" th:value="${category}" th:text="${category}">Option</option>
+		                    </select>
+	                  	</div>
+	                  </div>
+	                  <div class="form-group">
+	                    <label for="newProductCurrency">Currency</label>
+	                    <select class="form-control select2 select2-success" data-dropdown-css-class="select2-success" th:field="*{currency}" required id="newProductCurrency" style="width: 100%;">
+	                    	<option th:each="currency : ${currencies}" th:value="${currency}" th:text="${currency.getDisplayName() + '(' + currency.getSymbol() + ')'}">Option</option>
+	                    </select>
+	                  </div>
+		            </div>
+		            <div class="modal-footer justify-content-between">
+		              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		              <button type="Submit" class="btn btn-success" id="newProductSubmit">Submit</button>
+		            </div>
+	            </form>
+	          </div>
+	        </div>
+     	</div>
+     	<!-- New Sale Modal -->
+     	<div class="modal fade" id="createNewSalesModal" th:fragment="products-saleModal">
+	        <div class="modal-dialog modal-sm">
+	          <div class="modal-content">
+	            <div class="modal-header">
+	              <h4 class="modal-title">Sale</h4>
+	              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                <span aria-hidden="true">&times;</span>
+	              </button>
+	            </div>
+	            <form th:action="@{/sales}" th:object="${sale}" th:method="put" id="newSaleForm">
+	            	<div class="modal-body">
+		              <div class="form-group">
+		              	<label for="newSaleQuantity">Quantity</label>
+                    	<input type="number" class="form-control" id="newSaleQuantity" step="1" min="0" required th:field="*{quantity}">
+		              </div>
+		              <div class="form-group">
+	                    <label for="newSaleBuyer">Buyer</label>
+	                    <input type="text" class="form-control" id="newSaleBuyer" placeholder="Enter Buyer's name" required th:field="*{buyer}">
+	                  </div>
+	                  <div class="form-group" id="saleSelectDiv">
+	                    <label for="newSaleStatus">Status</label>
+	                    <select class="form-control select2 select2-success" data-dropdown-css-class="select2-success" th:field="*{status}" required id="newSaleStatus" style="width: 100%;">
+	                    	<option th:each="status : ${statusList}" th:value="${status}" th:text="${status}">Option</option>
+	                    </select>
+	                  </div>
+		            </div>
+		            <div class="modal-footer justify-content-between">
+		              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		              <button type="submit" class="btn btn-success" id="newSaleSubmit">Submit</button>
+		            </div>
+	            </form>
+	          </div>
+	        </div>
+     	</div>
+      	<div class="row">
+      		<div class="col-2" th:each="categoryCount : ${categoryCounts}">
+      			<div class="info-box">
+              		<span class="info-box-icon bg-info elevation-1">
+              			<img th:src="@{/images/products/crops.jpg}" height="64" width="100%" th:if="${categoryCount.key == 'Crops'}">
+              			<img th:src="@{/images/products/dairy.jpg}" height="64" width="100%" th:if="${categoryCount.key == 'Dairy'}">
+              			<img th:src="@{/images/products/fishery.jpg}" height="64" width="100%" th:if="${categoryCount.key == 'Fishery'}">
+              			<img th:src="@{/images/products/forestry.jpg}" height="64" width="100%" th:if="${categoryCount.key == 'Forestry'}">
+              			<img th:src="@{/images/products/horticulture.jpg}" height="64" width="100%" th:if="${categoryCount.key == 'Horticulture'}">
+              			<img th:src="@{/images/products/poultry.jpg}" height="64" width="100%" th:if="${categoryCount.key == 'Poultry'}">
+           			</span>
+	
+             		<div class="info-box-content">
+               			<span class="info-box-text" th:text="${categoryCount.key}"></span>
+               			<span class="info-box-number" th:text="${categoryCount.value}"></span>
+             		</div>
+	            </div>
+      		</div>
+      	</div>
+        <div class="row">
+           <div class="col-12">
+         		<div class="card card-outline card-success">
+         			<div class="card-body">
+         				<button class="btn bg-gradient-success mb-3" data-toggle="modal" data-target="#createNewModal" onclick="newProduct()">Create New</button>
+						<table id="productsTable" class="table table-bordered table-striped">
+							<thead>
+								<tr class="text-center">
+									<th>Name</th>
+									<th>Quantity</th>
+									<th>Price</th>
+									<th>Category</th>
+									<th>Creation Date</th>
+									<th>Update Date</th>
+									<th>Created By</th>
+									<th>Updated By</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="product : ${products}" class="text-center">
+									<td th:text="${product.name}"></td>
+									<td th:text="${product.quantity > 0 ? (product.quantity + ' ' + product.quantityUnit) : 'Out of Stock'}"></td>
+									<td th:text="${product.price + ' ' + product.currency}"></td>
+									<td th:text="${product.category}"></td>
+									<td th:text="${#dates.format(product.created_at, 'dd-MM-yyyy')}"></td>
+									<td th:text="${#dates.format(product.updated_at, 'dd-MM-yyyy')}"></td>
+									<td th:text="${product.createdBy.username}"></td>
+									<td th:text="${product.updatedBy.username}"></td>
+									<td id="actionButtons">
+										<span data-toggle="tooltip" title="Edit" data-placement="top">
+											<button class="btn bg-gradient-warning btn-sm rounded-circle" data-toggle="modal" data-target="#createNewModal" th:onclick="editProduct([[${product}]])">
+												<i class="fas fa-edit"></i>
+											</button>
+										</span>
+										<form th:action="@{/products/{id} (id=${product.id})}" th:method="delete" class="d-inline-block" data-toggle="tooltip" title="Delete" data-placement="top">
+											<button class="btn bg-gradient-danger btn-sm rounded-circle">
+												<i class="fas fa-trash"></i>
+											</button>
+										</form>
+										<button class="btn bg-gradient-success btn-sm rounded-pill" data-toggle="modal" data-target="#createNewSalesModal" th:onclick="sellProduct([[${product}]])" th:if="${product.quantity > 0}">Sell</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+         			</div>
+         		</div>
+           </div>
+       	</div>
+    </div>
+    <span th:fragment="product-scripts">
+    	<script th:inline="javascript">
+		    $(function () {
+		        $("#productsTable").DataTable({
+		        	
+	          		"responsive": true,
+	         		"lengthChange": false,
+	          		"autoWidth": false,
+	          		"buttons": ['pageLength', "csv", "pdf", "print", "colvis"]
+		        }).buttons().container().appendTo('#productsTable_wrapper .col-md-6:eq(0)');
+		        
+		        $('.select2').select2();
+		        $('.select2bs4').select2({
+		            theme: 'bootstrap4'
+	          	});
+	      	});
+	      	
+		    function newProduct() {
+				$('#createNewModal .modal-title').text("New Product");
+				$("#newProductForm input[name='_method']").attr('value', "post");
+				$('#newProductForm').attr('action', "/products");
+				$('#newProductName').val(null);
+				$('#newProductQuantity').val(0);
+				$('#newProductUnit').val("pcs");
+				$('#newProductCategory').val("CROPS").change();
+				$('#newProductSubmit').removeClass("btn-warning").addClass("btn-success");
+          	}
+
+		    function editProduct(product) {
+			    $('#newProductForm').attr('action', "/products/" + product.id);
+			    $("#newProductForm input[name='_method']").attr('value', "put");
+				$('#createNewModal .modal-title').text("Edit Product");
+				$('#newProductName').val(product.name);
+				$('#newProductQuantity').val(product.quantity);
+				$('#newProductPrice').val(product.price);
+				$('#newProductUnit').val(product.quantityUnit);
+				$('#newProductCurrency').val(product.currency).change();
+				$('#newProductCategory').val(product.category).change();
+				$('#newProductSubmit').removeClass("btn-success").addClass("btn-warning text-white");
+          	}
+
+          	function sellProduct(product) {
+		    	$('#newSaleQuantity').val(0);
+		    	$('#newSaleBuyer').val('');
+          		$('#createNewSalesModal .modal-title').text('Sell ' + product.name);
+          		$("#newSaleForm input[name='_method']").attr('value', "post");
+          		$('#newSaleForm').attr('action', "/sales?product=" + product.id);
+          		$("#newSaleQuantity").attr('max', product.quantity);
+          		$('#newSaleSubmit').removeClass("btn-warning text-white").addClass("btn-success");
+          		$('#saleSelectDiv').hide();
+            }
+	    </script>
+    </span>
+</body>
+</html>
