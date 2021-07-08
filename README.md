@@ -1,6 +1,5 @@
 # Farm Management Application
 
-A web application to manage users using CRUD functionality. This project is a sample to familiarize oneself in using Servlets and JSP.
 A web application to manage farm products and sell them. This project is a sample to familiarize in using Spring Framework.
 
 ## Description
