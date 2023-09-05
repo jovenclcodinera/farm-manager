@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments :: head">
+</head>
+<body class="hold-transition layout-top-nav">
+    <div class="wrapper">
+        <header th:replace="fragments :: header"></header>
+        <main>
+            <div class="content-wrapper">
+                <div class="content-header">
+                    <div class="container" th:if="${contentHeaderTitle != null}">
+                        <div class="mb-2 row">
+                            <div class="col">
+                              <h1 class="m-0" th:text="${contentHeaderTitle}"></h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="container" th:replace="${viewName} :: ${fragmentName}"></div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="fragments :: footer"></footer>
+    </div>
+    <span th:replace="fragments :: scripts"></span>
+    <span th:if="${scriptViewName != null || scriptFragmentName != null}">
+    	<span th:replace="${scriptViewName} :: ${scriptFragmentName}"></span>
+    </span>
+</body>
+</html>

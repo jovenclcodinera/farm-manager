@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container" th:fragment="dashboard">
+    	<div class="row">
+        	<div class="col-12">
+        		<div class="card card-outline card-success">
+        			<div class="card-header d-flex justify-content-center">
+        				<h3 class="card-title">Annual Revenue Report</h3>
+        			</div>
+       			 	<div class="card-body">
+		                <div class="chart">
+		                  <canvas id="annualRevenueReport" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+		                </div>
+              		</div>
+        		</div>
+        	</div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm-6">
+                <div class="card card-outline card-success">
+                	<div class="card-header d-flex justify-content-center">
+        				<h3 class="card-title">Summarized Products</h3>
+        			</div>
+               		<div class="card-body">
+                		<table class="table table-bordered table-hover" id="productsTable">
+                			<thead>
+                				<tr class="text-center">
+                					<th>Product</th>
+                					<th>Price</th>
+                					<th>Sales</th>
+                					<th>Quantity</th>
+                				</tr>
+                			</thead>
+                			<tbody>
+                				<tr th:each="product : ${products}" class="text-center">
+                					<td th:text="${product.name}"></td>
+                					<td th:text="${product.price + ' ' + product.currency}"></td>
+                					<td th:text="${product.sales + ' Sold'}"></td>
+                					<td th:text="${product.quantity}"></td>
+                				</tr>
+                			</tbody>
+                		</table>
+                	</div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+           		<div class="info-box mb-3 bg-gradient-primary">
+              		<span class="info-box-icon"><i class="fas fa-apple-alt"></i></span>
+	
+              		<div class="info-box-content">
+	               		<span class="info-box-text">Available Products</span>
+		                <span class="info-box-number" th:text="${availableProducts}"></span>
+              		</div>
+            	</div>
+            	<div class="info-box mb-3 bg-gradient-info">
+              		<span class="info-box-icon"><i class="fas fa-tag"></i></span>
+	
+              		<div class="info-box-content">
+	               		<span class="info-box-text">Total Sale Orders</span>
+		                <span class="info-box-number" th:text="${totalSaleOrders}"></span>
+              		</div>
+            	</div>
+            	<div class="info-box mb-3 bg-gradient-success">
+              		<span class="info-box-icon"><i class="fas fa-dollar-sign"></i></span>
+	
+              		<div class="info-box-content">
+	               		<span class="info-box-text">Total Sold Products</span>
+		                <span class="info-box-number" th:text="${totalSoldProducts}"></span>
+              		</div>
+            	</div>
+            	<div class="info-box mb-3 bg-gradient-warning">
+              		<span class="info-box-icon"><i class="fas fa-boxes"></i></span>
+	
+              		<div class="info-box-content">
+	               		<span class="info-box-text">Total Buyers</span>
+		                <span class="info-box-number" th:text="${totalBuyers}"></span>
+              		</div>
+            	</div>
+            </div>
+        </div>
+    </div>
+    <span th:fragment="dashboard-scripts">
+    	<script th:inline="javascript">
+			$(function () {
+				$('#productsTable').DataTable({
+				      "paging": true,
+				      "lengthChange": false,
+				      "searching": false,
+				      "ordering": true,
+				      "info": true,
+				      "autoWidth": false,
+				      "responsive": true,
+			    });
+
+			    let lineChartCavas = $('#annualRevenueReport').get(0).getContext('2d');
+			    let lineChartOptions = {
+    	      		maintainAspectRatio : false,
+    	      		responsive : true,
+	    	      	legend: {
+	    	        	display: false
+	    	      	},
+	    	      	scales: {
+	    	       		xAxes: [{
+	    	          		gridLines : {
+		    	            	display : false,
+	    	          		}
+	    	        	}],
+	    	        	yAxes: [{
+	    	          		gridLines : {
+	    	            		display : true,
+	    	          		}
+	    	        	}]
+	    	      	},
+	    	      	datasetFill : false
+	    	    };
+	    	    let lineChartData = {
+ 	    	    	labels  : ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+ 	    	    	datasets: [
+   	    	        	{
+   	    	          		label               : 'Monthly Revenue Sales',
+   	    	          		backgroundColor     : '#28a745',
+   	    	          		borderColor         : '#28a745',
+   	    	          		pointRadius         : 3,
+   	    	          		pointColor          : '#3b8bba',
+   	    	          		pointStrokeColor    : 'rgba(60,141,188,1)',
+   	    	          		pointHighlightFill  : '#fff',
+   	    	          		pointHighlightStroke: 'rgba(60,141,188,1)',
+   	    	          		data                : ([[${annualRevenues}]]),
+   	    	          		fill				: false
+   	    	        	},
+   	    	      	]
+   	    	    };
+   	    	    let lineChart = new Chart(lineChartCavas, {
+					type: 'line',
+					data: lineChartData,
+					options: lineChartOptions
+   	    		});
+			});
+		</script>
+    </span>
+</body>
+</html>
